@@ -6,16 +6,27 @@ import 'package:http/http.dart';
 
 class ApiService {
   String baseUrl = "https://sandbox.safaricom.co.ke/";
+  String getTodayValidTimeStamp() {
+    var datedefinedstamp = DateTime.now();
+    return "${datedefinedstamp.year.toString()}${datedefinedstamp.month.toString().padLeft(2, '0')}${datedefinedstamp.day.toString().padLeft(2, '0')}${datedefinedstamp.hour.toString().padLeft(2, '0')}${datedefinedstamp.minute.toString().padLeft(2, '0')}${datedefinedstamp.second.toString().padLeft(2, '0')}";
+  }
 
   Future<bool> stkPush(Mpesa mpesa) async {
+    String timestamp = getTodayValidTimeStamp();
     var body = {
-      "ShortCode": "600981",
-      "CommandID": "CustomerPayBillOnline",
+      "AccountReference": mpesa.phoneNumber,
+      "BusinessShortCode": dotenv.env['short_code'],
+      "PartyB": dotenv.env['short_code'],
+      "Timestamp": timestamp,
+      "PartyA": mpesa.phoneNumber,
+      "TransactionType": "CustomerPayBillOnline",
       "Amount": mpesa.amount,
-      "Msisdn": mpesa.phoneNumber,
-      "BillRefNumber": mpesa.phoneNumber,
+      "PhoneNumber": mpesa.phoneNumber,
+      "Password": generatePasswordForStk(timestamp),
+      "CallBackURL": dotenv.env["CALL_BACK_URL"],
+      "TransactionDesc": "TransactionDesc"
     };
-    Response response = await postCall("mpesa/c2b/v1/simulate",
+    Response response = await postCall("mpesa/stkpush/v1/processrequest",
         {"Authorization": "Bearer ${await getAccessToken()}"}, body);
     if (response.statusCode != 200) {
       return false;
@@ -51,6 +62,7 @@ class ApiService {
       }
     } catch (e) {
       //handle this some way
+      print(e);
     }
     return response;
   }
@@ -58,6 +70,12 @@ class ApiService {
   String generatePassword() {
     final bytes = utf8.encode(
         "${dotenv.env['consumer_key']}:${dotenv.env['consumer_secret']}");
+    return base64.encode(bytes);
+  }
+
+  String generatePasswordForStk(String timestamp) {
+    final bytes = utf8.encode(
+        "${dotenv.env['short_code']}${dotenv.env['STK_PASSWORD']}$timestamp");
     return base64.encode(bytes);
   }
 

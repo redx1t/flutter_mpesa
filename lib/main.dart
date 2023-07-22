@@ -113,7 +113,11 @@ class _MyHomePageState extends State<MyHomePage> {
       return;
     }
     bool status = await ApiService().stkPush(Mpesa(amount, phoneNumber));
-    if (status) {}
+    if (status) {
+      notify("successful stk push. please enter pin");
+    } else {
+      notify("failed. please try again");
+    }
     setLoading(false);
   }
 
