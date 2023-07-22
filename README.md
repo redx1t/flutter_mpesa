@@ -1,16 +1,25 @@
 # flutter_mpesa
 
-A new Flutter project.
+A simple example of implementing stk push on flutter mobile
 
-## Getting Started
+TESTED ON: ANDROID MOBILE
 
-This project is a starting point for a Flutter application.
+introduce a .env file
 
-A few resources to get you started if this is your first Flutter project:
+ensure its listed as an asset under `pubspec.yaml`
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```
+    assets:
+        - .env
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+add env configs as on `./env.example`
+
+you can get this .env from https://developer.safaricom.co.ke/ by creating an app and generating a lipaonline password for STK_PASSWORD
+
+on development the short_code in .env.example is valid as of 07-2023
+
+
+run `flutter pub get` to get all the packages
+
+run `flutter run` and code away
